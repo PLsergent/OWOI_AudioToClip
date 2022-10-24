@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "owoi-audiotoclip"
+version = "0.1.0"
+description = ""
+authors = ["Pierre-Louis Sergent <papa.louis59@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "owoi_audiotoclip"}]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+google-cloud-speech = "^2.16.2"
+google-cloud-storage = "^2.5.0"
+moviepy = "^1.0.3"
+black = "^22.10.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
