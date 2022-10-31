@@ -12,10 +12,11 @@ class ClipMakerFactory:
 
     def get_audio_file(self, filename: str) -> AudioFileClip:
         try:
+            os.makedirs("./tmp/", exist_ok=True)
             bucket = self.storage_client.bucket(self.gcs_uri)
             blob = bucket.blob(filename)
-            blob.download_to_filename("../tmp/" + filename)
-            return AudioFileClip("../tmp/" + filename)
+            blob.download_to_filename("./tmp/" + filename)
+            return AudioFileClip("./tmp/" + filename)
         except:
             traceback.print_exc()
             raise Exception("Could not download audio file from GCS")

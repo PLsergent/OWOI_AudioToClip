@@ -29,20 +29,24 @@ class TranscriptFactory:
 
     def transcribe_audio_to_text(self):
         self.word_timestamps = []
-        operation = self.speech_client.long_running_recognize(
-            config=self._get_recognition_config(),
-            audio=speech.RecognitionAudio(uri=self.gcs_uri),
-        )
-        response = operation.result()
+        try:
+            operation = self.speech_client.long_running_recognize(
+                config=self._get_recognition_config(),
+                audio=speech.RecognitionAudio(uri=self.gcs_uri),
+            )
+            response = operation.result()
 
-        for result in response.results:
-            alternative = result.alternatives[0]
-            for word_info in alternative.words:
-                self.word_timestamps.append(
-                    WordTimestamp(
-                        word_info.word, word_info.start_time, word_info.end_time
+            for result in response.results:
+                alternative = result.alternatives[0]
+                for word_info in alternative.words:
+                    self.word_timestamps.append(
+                        WordTimestamp(
+                            word_info.word, word_info.start_time, word_info.end_time
+                        )
                     )
-                )
+        except:
+            traceback.print_exc()
+            raise Exception("Could not transcribe audio to text")
 
     def get_word_timestamps(self):
         return self.word_timestamps
