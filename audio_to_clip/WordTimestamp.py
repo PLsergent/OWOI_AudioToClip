@@ -14,3 +14,4 @@ class WordTimestamp:
 
     def get_word_dict(self) -> dict:
         return {"word": self.word, "start": self.start, "end": self.end}
+
