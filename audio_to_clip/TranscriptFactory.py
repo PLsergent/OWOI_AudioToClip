@@ -27,7 +27,7 @@ class TranscriptFactory:
             model="video",
         )
 
-    def transcribe_audio_to_text(self):
+    def transcribe_audio_to_text(self) -> list[WordTimestamp]:
         self.word_timestamps = []
         try:
             operation = self.speech_client.long_running_recognize(
@@ -44,6 +44,7 @@ class TranscriptFactory:
                             word_info.word, word_info.start_time, word_info.end_time
                         )
                     )
+            return self.word_timestamps
         except:
             traceback.print_exc()
             raise Exception("Could not transcribe audio to text")
