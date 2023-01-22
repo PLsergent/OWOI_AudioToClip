@@ -2,6 +2,7 @@ from dataclasses import dataclass
 import os
 import traceback
 from moviepy.editor import AudioFileClip, VideoFileClip
+from google.cloud import storage
 
 from audio_to_clip.WordTimestamp import WordTimestamp
 
@@ -12,6 +13,7 @@ class ClipMakerFactory:
     words_timestamps: list[WordTimestamp]
     audio_file_clip: AudioFileClip = None
     video_file_clip: VideoFileClip = None
+    storage_client = storage.Client()
     gcs_storage_uri: str = f"gs://videos/{username}/{video_name}"
     google_credentials_key: str = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS")
 
