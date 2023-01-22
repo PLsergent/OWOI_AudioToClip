@@ -13,6 +13,7 @@ google-cloud-speech = "^2.16.2"
 google-cloud-storage = "^2.5.0"
 moviepy = "^1.0.3"
 black = "^22.10.0"
+Google-Images-Search = "^1.4.6"
 
 
 [build-system]
