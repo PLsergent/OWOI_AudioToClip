@@ -6,7 +6,7 @@ from moviepy.editor import AudioFileClip, VideoFileClip, ImageClip
 from google.cloud import storage
 from google_images_search import GoogleImagesSearch
 
-from audio_to_clip.WordTimestamp import WordTimestamp
+from owoi_audio_to_clip.WordTimestamp import WordTimestamp
 
 
 @dataclass

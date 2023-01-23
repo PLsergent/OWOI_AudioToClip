@@ -4,7 +4,7 @@ import traceback
 from google.cloud import speech
 from google.cloud import storage
 
-from audio_to_clip.WordTimestamp import WordTimestamp
+from owoi_audio_to_clip.WordTimestamp import WordTimestamp
 
 
 @dataclass
