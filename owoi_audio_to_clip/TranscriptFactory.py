@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import os
 import traceback
 from google.cloud import speech
@@ -11,7 +11,7 @@ from owoi_audio_to_clip.WordTimestamp import WordTimestamp
 class TranscriptFactory:
     gcs_uri: str
     language_code: str = "en-US"
-    word_timestamps: list[WordTimestamp] = []
+    word_timestamps: list[WordTimestamp] = field(default_factory=list)
     speech_client = speech.SpeechClient()
     storage_client = storage.Client()
     google_credentials_key: str = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS")
