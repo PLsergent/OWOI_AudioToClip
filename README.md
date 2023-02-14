@@ -44,7 +44,7 @@ This class is used to create a clip from a transcript.
 ```python
 from audio_to_clip import ClipMakerFactory
 
-clip_makfer_factory = ClipMagerFactory(video_name, username, transcript, gcs_bucket_dest, local_storage_dest, gcs_bucket_audio)
+clip_maker_factory = ClipMakerFactory(video_name, username, transcript, gcs_bucket, local_storage, gcs_audio_path)
 ```
 
 Params:
@@ -52,8 +52,8 @@ Params:
 - ***username***:str -> name of the user
 - ***transcript***:list[WordTimestamp] -> list of WordTimestamp
 - ***gcs_bucket_dest***:str -> name of the gcs bucket destination
-- ***local_storage_dest***:str -> path to the local storage destination
-- ***gcs_bucket_audio***:str -> name of the gcs bucket where the audio is stored
+- ***local_storage***:str -> path to the local storage destination
+- ***gcs_audio_path***:str -> path to the audio file in the gcs bucket
 
 Methods:
 - ***clip_maker(word_timestamps: list[WordTimestamp]) -> VideoFileClip***: creates a clip from the transcript and returns a VideoFileClip
