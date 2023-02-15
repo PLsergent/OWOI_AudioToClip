@@ -57,7 +57,7 @@ class ClipMakerFactory:
             'q': word,
             'num': num,
             'imgSize': 'xlarge',
-            'safe': 'active',
+            'safe': 'medium',
             'imgColorType': 'color'
         }
         gis.search(search_params=_search_params)
