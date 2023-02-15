@@ -44,7 +44,7 @@ class ClipMakerFactory:
             self.video_file_clip = concatenate_videoclips(clips, method="compose")
             self.video_file_clip = self.video_file_clip.set_audio(self._get_audio_file(self.gcs_audio_path))
             self.video_file_clip.write_videofile(
-                self.local_dest + self.video_name + ".mp4", fps=120, codec="mpeg4"
+                self.local_dest + self.video_name + ".mp4", fps=24, codec="mpeg4", bitrate="5000k"
             )
             return self.video_file_clip
         except:
@@ -56,7 +56,9 @@ class ClipMakerFactory:
         _search_params = {
             'q': word,
             'num': num,
-            'imgSize': 'MEDIUM'
+            'imgSize': 'xlarge',
+            'safe': 'active',
+            'imgColorType': 'color'
         }
         gis.search(search_params=_search_params)
         if len(gis.results()) == 0:
