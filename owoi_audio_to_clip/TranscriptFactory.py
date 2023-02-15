@@ -44,10 +44,24 @@ class TranscriptFactory:
                             word_info.word, word_info.start_time, word_info.end_time
                         )
                     )
+            self._fill_blanks()
             return self.word_timestamps
         except:
             traceback.print_exc()
             raise Exception("Could not transcribe audio to text")
+    
+    def _fill_blanks(self):
+        self.word_timestamps.insert(0, WordTimestamp("###", 0, self.word_timestamps[0].start))
+        for i in range(len(self.word_timestamps) - 1):
+            if self.word_timestamps[i].end == self.word_timestamps[i + 1].start:
+                continue
+            else:
+                self.word_timestamps.insert(
+                    i + 1,
+                    WordTimestamp(
+                        "###", self.word_timestamps[i].end, self.word_timestamps[i + 1].start
+                    ),
+                )
 
     def get_word_timestamps(self):
         return self.word_timestamps

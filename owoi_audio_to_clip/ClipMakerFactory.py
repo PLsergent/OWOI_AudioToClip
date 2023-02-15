@@ -2,7 +2,7 @@ from dataclasses import dataclass
 import os
 import traceback
 import requests
-from moviepy.editor import AudioFileClip, VideoFileClip, ImageClip, concatenate_videoclips
+from moviepy.editor import AudioFileClip, VideoFileClip, ImageClip, ColorClip, concatenate_videoclips
 from google.cloud import storage
 from google_images_search import GoogleImagesSearch
 
@@ -41,11 +41,11 @@ class ClipMakerFactory:
     def clip_maker(self) -> VideoFileClip:
         try:
             clips = [self._define_image_clip(wordts.get_word_dict()) for wordts in self.words_timestamps]
-            self.video_file_clip = concatenate_videoclips(clips)
+            self.video_file_clip = concatenate_videoclips(clips, method="compose")
+            self.video_file_clip = self.video_file_clip.set_audio(self._get_audio_file(self.gcs_audio_path))
             self.video_file_clip.write_videofile(
-                self.local_dest + self.video_name + ".mp4", fps=24, codec="mpeg4"
+                self.local_dest + self.video_name + ".mp4", fps=120, codec="mpeg4"
             )
-            self.video_file_clip.set_audio(self._get_audio_file(self.gcs_audio_path))
             return self.video_file_clip
         except:
             traceback.print_exc()
@@ -64,23 +64,30 @@ class ClipMakerFactory:
         return gis.results()[num-1].url
     
     def _define_image_clip(self, img_dict: dict) -> ImageClip:
+        if img_dict['word'] == "###":
+            color_clip = ColorClip((1920, 1080), (0,0,0))
+            if img_dict["start"] == 0:
+                color_clip = color_clip.set_duration(img_dict['end'].total_seconds())
+            else:
+                color_clip = color_clip.set_duration(img_dict['end'].total_seconds() - img_dict['start'].total_seconds())
+            return color_clip
+
         num = 1
-        try:
-            url = self._get_image_url_from_google_image_search(img_dict['word'])
-            response = requests.get(url)
-            open(self.local_dest + img_dict['word'] + '.jpg', 'wb').write(response.content)
-            return ImageClip(
-                        self.local_dest + img_dict['word'] + '.jpg'
-                    ).set_duration(img_dict['end'].total_seconds() - img_dict['start'].total_seconds())
-        except:
+        image_clip = self._get_image_clip(img_dict, num)
+        while image_clip is None:
             num += 1
+            image_clip = self._get_image_clip(img_dict, num)
+        return image_clip.set_duration(img_dict['end'].total_seconds() - img_dict['start'].total_seconds())
+        
+    def _get_image_clip(self, img_dict: dict, num: int):
+        try:
             url = self._get_image_url_from_google_image_search(img_dict['word'], num=num)
             response = requests.get(url)
             open(self.local_dest + img_dict['word'] + '.jpg', 'wb').write(response.content)
-            return ImageClip(
-                        self.local_dest + img_dict['word'] + '.jpg'
-                    ).set_duration(img_dict['end'].total_seconds() - img_dict['start'].total_seconds())
-
+            image_clip = ImageClip(self.local_dest + img_dict['word'] + '.jpg')
+            return image_clip
+        except:
+            return None
     
     def upload_video_to_gcs(self):
         bucket = self.storage_client.bucket(self.gcs_bucket)
