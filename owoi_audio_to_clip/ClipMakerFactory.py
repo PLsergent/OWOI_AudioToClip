@@ -132,12 +132,12 @@ class ClipMakerFactory:
             wordts["end"].total_seconds() - wordts["start"].total_seconds()
         )
 
-    def _get_image_clip(self, wordts: dict, num: int):
+    def _get_image_clip(self, wordts: dict, num: int, img_size: str = "xlarge"):
         try:
             for file in os.listdir(self.local_dest):
                 if file == wordts["word"] + ".jpg":
                     return ImageClip(self.local_dest + wordts["word"] + ".jpg")
-            url = self._get_image_url_from_google_image_search(wordts["word"], num=num)
+            url = self._get_image_url_from_google_image_search(wordts["word"], num=num, img_size=img_size)
             response = requests.get(url)
             open(self.local_dest + wordts["word"] + ".jpg", "wb").write(
                 response.content

@@ -15,6 +15,7 @@ moviepy = "^1.0.3"
 black = "^22.10.0"
 Google-Images-Search = "^1.4.6"
 imageio = {extras = ["opencv"], version = "^2.25.1"}
+pytube = "^12.1.2"
 
 
 [build-system]

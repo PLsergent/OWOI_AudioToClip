@@ -44,6 +44,8 @@ class TranscriptFactory:
                             word_info.word, word_info.start_time, word_info.end_time
                         )
                     )
+            if len(self.word_timestamps) == 0:
+                raise Exception("Could not transcribe audio to text")
             self._fill_blanks()
             return self.word_timestamps
         except:

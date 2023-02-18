@@ -509,6 +509,14 @@ Pillow = ">=5.1.0"
 requests = ">=2.19.1"
 
 [[package]]
+name = "pytube"
+version = "12.1.2"
+description = "Python 3 library for downloading YouTube Videos."
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[[package]]
 name = "requests"
 version = "2.28.1"
 description = "Python HTTP for Humans."
@@ -610,7 +618,7 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "72572a542183e339dd2d55a753c5a491172fd80d5fe32a8093bb36ddcd12c8de"
+content-hash = "32d0b1386c05f80f936eca0e0802b54d212ec20e3ce6059c81d9a36f53d52dcd"
 
 [metadata.files]
 black = [
@@ -1020,6 +1028,10 @@ pyparsing = [
 python-resize-image = [
     {file = "python-resize-image-1.1.20.tar.gz", hash = "sha256:b055dab919d623ece8ec95262d4bdbf006cb1a10e818e9b36221c8b1885f9922"},
     {file = "python_resize_image-1.1.20-py2.py3-none-any.whl", hash = "sha256:0977bcf8454949b2d37e56c66d95494146c4d9da295a8f7af8eff43d2c35ca6a"},
+]
+pytube = [
+    {file = "pytube-12.1.2-py3-none-any.whl", hash = "sha256:a844800002744f33107f4440543f9a5f1fd9fcd97dad35cf2dd4803212352d9a"},
+    {file = "pytube-12.1.2.tar.gz", hash = "sha256:2d34a484f81cae106ea84e8c00871f97dcc293e8ed8c074e65abc4119f02c98f"},
 ]
 requests = [
     {file = "requests-2.28.1-py3-none-any.whl", hash = "sha256:8fefa2a1a1365bf5520aac41836fbee479da67864514bdb821f31ce07ce65349"},

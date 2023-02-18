@@ -69,4 +69,18 @@ from owoi_audio_to_clip.utils import upload_audio_to_gcs, upload_video_to_gcs, p
 upload_audio_to_gcs(bucket_name, username, audio_name, local_storage_path)
 upload_video_to_gcs(bucket_name, username, video_name, local_storage_path)
 purge_local_storage_images(local_storage_path)
+download_audio_from_youtube(youtube_url, local_dest, username, audio_name, start_time, end_time, gcs_bucket_name)
 ```
+
+#### download_audio_from_youtube
+
+This function is used to download an audio file from a youtube video, and upload it to the gcs bucket.
+
+Params:
+- ***youtube_url***:str -> url of the youtube video
+- ***local_dest***:str -> path to the local storage destination (where the audio file will be downloaded, the program will create a folder with the username, and put the audio in an 'audios' folder)
+- ***username***:str -> name of the user
+- ***audio_name***:str -> name of the audio file
+- ***start_time***:str -> start time of the audio file extracted from the youtube video
+- ***end_time***:str -> end time of the audio file extracted from the youtube video
+- ***gcs_bucket_name***:str -> name of the gcs bucket destination
