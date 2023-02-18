@@ -16,7 +16,7 @@ class ClipMakerFactory:
     words_timestamps: list[WordTimestamp]
     gcs_bucket: str
     local_dest: str
-    gcs_audio_path: str
+    gcs_audio_name: str
     audio_file_clip: AudioFileClip = None
     video_file_clip: VideoFileClip = None
     storage_client = storage.Client()
@@ -24,16 +24,15 @@ class ClipMakerFactory:
     google_search_id = os.environ.get("GOOGLE_SEARCH_ID")
     google_credentials_key: str = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS")
 
-    def _get_audio_file(self, path_to_gcs: str) -> AudioFileClip:
+    def _get_audio_file(self, audio_name: str) -> AudioFileClip:
         if self.audio_file_clip is not None:
             return self.audio_file_clip
         try:
-            os.makedirs(self.local_dest, exist_ok=True)
+            os.makedirs(f"{self.local_dest}/{self.username}/audios", exist_ok=True)
             bucket = self.storage_client.bucket(self.gcs_bucket)
-            blob = bucket.blob(path_to_gcs)
-            filename = path_to_gcs.split("/")[-1]
-            blob.download_to_filename(self.local_dest + filename)
-            return AudioFileClip(self.local_dest + filename)
+            blob = bucket.blob(f"{self.username}/audios/{audio_name}.wav")
+            blob.download_to_filename(f"{self.local_dest}/{self.username}/audios/{audio_name}.wav")
+            return AudioFileClip(f"{self.local_dest}/{self.username}/audios/{audio_name}.wav")
         except:
             traceback.print_exc()
             raise Exception("Could not download audio file from GCS")
@@ -42,9 +41,10 @@ class ClipMakerFactory:
         try:
             clips = [self._define_image_clip(wordts.get_word_dict()) for wordts in self.words_timestamps]
             self.video_file_clip = concatenate_videoclips(clips, method="compose")
-            self.video_file_clip = self.video_file_clip.set_audio(self._get_audio_file(self.gcs_audio_path))
+            self.video_file_clip = self.video_file_clip.set_audio(self._get_audio_file(self.gcs_audio_name))
+            os.makedirs(f"{self.local_dest}/{self.username}/videos", exist_ok=True)
             self.video_file_clip.write_videofile(
-                self.local_dest + self.video_name + ".mp4", fps=24, codec="mpeg4", bitrate="5000k"
+                f"{self.local_dest}/{self.username}/videos/{self.video_name}.mp4", fps=24, codec="mpeg4", bitrate="5000k"
             )
             return self.video_file_clip
         except:
@@ -65,37 +65,31 @@ class ClipMakerFactory:
             return "https://img.freepik.com/premium-vector/website-page-found-error-robot-character-with-magnifying-glass-hand-site-crash-technical_502272-1890.jpg?w=2000"
         return gis.results()[num-1].url
     
-    def _define_image_clip(self, img_dict: dict) -> ImageClip:
-        if img_dict['word'] == "###":
+    def _define_image_clip(self, wordts: dict) -> ImageClip:
+        if wordts['word'] == "###":
             color_clip = ColorClip((1920, 1080), (0,0,0))
-            if img_dict["start"] == 0:
-                color_clip = color_clip.set_duration(img_dict['end'].total_seconds())
+            if wordts["start"] == 0:
+                color_clip = color_clip.set_duration(wordts['end'].total_seconds())
             else:
-                color_clip = color_clip.set_duration(img_dict['end'].total_seconds() - img_dict['start'].total_seconds())
+                color_clip = color_clip.set_duration(wordts['end'].total_seconds() - wordts['start'].total_seconds())
             return color_clip
 
         num = 1
-        image_clip = self._get_image_clip(img_dict, num)
+        image_clip = self._get_image_clip(wordts, num)
         while image_clip is None:
             num += 1
-            image_clip = self._get_image_clip(img_dict, num)
-        return image_clip.set_duration(img_dict['end'].total_seconds() - img_dict['start'].total_seconds())
+            image_clip = self._get_image_clip(wordts, num)
+        return image_clip.set_duration(wordts['end'].total_seconds() - wordts['start'].total_seconds())
         
-    def _get_image_clip(self, img_dict: dict, num: int):
+    def _get_image_clip(self, wordts: dict, num: int):
         try:
-            url = self._get_image_url_from_google_image_search(img_dict['word'], num=num)
+            for file in os.listdir(self.local_dest):
+                if file == wordts['word'] + '.jpg':
+                    return ImageClip(self.local_dest + wordts['word'] + '.jpg')
+            url = self._get_image_url_from_google_image_search(wordts['word'], num=num)
             response = requests.get(url)
-            open(self.local_dest + img_dict['word'] + '.jpg', 'wb').write(response.content)
-            image_clip = ImageClip(self.local_dest + img_dict['word'] + '.jpg')
+            open(self.local_dest + wordts['word'] + '.jpg', 'wb').write(response.content)
+            image_clip = ImageClip(self.local_dest + wordts['word'] + '.jpg')
             return image_clip
         except:
             return None
-    
-    def upload_video_to_gcs(self):
-        bucket = self.storage_client.bucket(self.gcs_bucket)
-        blob = bucket.blob(f"{self.username}/{self.video_name}.mp4")
-        blob.upload_from_filename(f"{self.local_dest}{self.username}/{self.video_name}.mp4")
-
-    def get_video_file(self) -> VideoFileClip:
-        if self.video_file_clip is not None:
-            return self.video_file_clip

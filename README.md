@@ -26,7 +26,7 @@ export GOOGLE_SEARCH_ID="id"
 This class is used to create a transcript from a text file. It will create a list of words and a list of timestamps.
 
 ```python	
-from audio_to_clip import ClipMakerFactory
+from owoi_audio_to_clip.TranscriptFactory import TranscriptFactory
 
 transcript_factory = TranscriptFactory(gcs_uri="gs://bucket/file.mp3")
 ```
@@ -42,9 +42,9 @@ This Class should be used to create a transcript from a text file before creatin
 This class is used to create a clip from a transcript.
 
 ```python
-from audio_to_clip import ClipMakerFactory
+from owoi_audio_to_clip.ClipMakerFactory import ClipMakerFactory
 
-clip_maker_factory = ClipMakerFactory(video_name, username, transcript, gcs_bucket, local_storage, gcs_audio_path)
+clip_maker_factory = ClipMakerFactory(video_name, username, transcript, gcs_bucket_name, local_storage_path, gcs_audio_name)
 ```
 
 Params:
@@ -57,4 +57,15 @@ Params:
 
 Methods:
 - ***clip_maker(word_timestamps: list[WordTimestamp]) -> VideoFileClip***: creates a clip from the transcript and returns a VideoFileClip
-- ***upload_video_to_gcs() -> None***: uploads the video to the gcs bucket with the name: `username/video_name.mp4`, should be called after clip_maker
+
+## Functions
+
+### Utils
+
+```python
+from owoi_audio_to_clip.utils import upload_audio_to_gcs, upload_video_to_gcs, purge_local_storage_images
+
+upload_audio_to_gcs(bucket_name, username, audio_name, local_storage_path)
+upload_video_to_gcs(bucket_name, username, video_name, local_storage_path)
+purge_local_storage_images(local_storage_path)
+```
