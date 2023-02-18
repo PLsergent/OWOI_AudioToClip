@@ -27,6 +27,7 @@ class ClipMakerFactory:
     gcs_bucket: str
     local_dest: str
     gcs_audio_name: str
+    with_subtitles: bool = False
     audio_file_clip: AudioFileClip = None
     video_file_clip: VideoFileClip = None
     storage_client = storage.Client()
@@ -62,9 +63,10 @@ class ClipMakerFactory:
                 self._get_audio_file(self.gcs_audio_name)
             )
             os.makedirs(f"{self.local_dest}/{self.username}/videos", exist_ok=True)
-            self.video_file_clip = CompositeVideoClip(
-                [self.video_file_clip, self._generate_subtitles().set_pos(("center", "bottom"))]
-            )
+            if self.with_subtitles:
+                self.video_file_clip = CompositeVideoClip(
+                    [self.video_file_clip, self._generate_subtitles().set_pos(("center", "bottom"))]
+                )
             self.video_file_clip.write_videofile(
                 f"{self.local_dest}/{self.username}/videos/{self.video_name}.mp4",
                 fps=24,

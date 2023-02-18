@@ -44,7 +44,7 @@ This class is used to create a clip from a transcript.
 ```python
 from owoi_audio_to_clip.ClipMakerFactory import ClipMakerFactory
 
-clip_maker_factory = ClipMakerFactory(video_name, username, transcript, gcs_bucket_name, local_storage_path, gcs_audio_name)
+clip_maker_factory = ClipMakerFactory(video_name, username, transcript, gcs_bucket_name, local_storage_path, gcs_audio_name, with_subtitles=True)
 ```
 
 Params:
@@ -54,6 +54,7 @@ Params:
 - ***gcs_bucket_dest***:str -> name of the gcs bucket destination
 - ***local_storage***:str -> path to the local storage destination
 - ***gcs_audio_path***:str -> path to the audio file in the gcs bucket
+- ***with_subtitles***:bool -> if True, subtitles will be added to the video
 
 Methods:
 - ***clip_maker(word_timestamps: list[WordTimestamp]) -> VideoFileClip***: creates a clip from the transcript and returns a VideoFileClip
