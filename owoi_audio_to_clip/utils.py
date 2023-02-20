@@ -28,8 +28,10 @@ def download_audio_from_youtube(youtube_url, local_dest, username, audio_name, s
     base, _ = os.path.splitext(out_file)
     new_file = base + '.wav'
     os.rename(out_file, new_file)
+    print("Audio downloaded")
 
     audio_file_clip = AudioFileClip(f"{local_dest}/{username}/audios/{audio_name}.wav", fps=44100, nbytes=4, buffersize=13000000)
     audio_file_clip = audio_file_clip.subclip(start_time, end_time)
     audio_file_clip.write_audiofile(f"{local_dest}/{username}/audios/{audio_name}.wav", fps=44100, nbytes=4, buffersize=13000000, bitrate="500k")
     upload_audio_to_gcs(gcs_bucket_name, username, audio_name, local_dest)
+    print("Audio uploaded to GCS")

@@ -98,6 +98,7 @@ class ClipMakerFactory:
             "q": word,
             "num": num,
             "imgSize": img_size,
+            "fileType": "jpg",
             "safe": "medium",
             "imgColorType": "color",
         }
@@ -107,6 +108,10 @@ class ClipMakerFactory:
         return gis.results()[num - 1].url
 
     def _define_image_clip(self, wordts: dict) -> ImageClip:
+        pre_existing_img = self._check_if_image_exists(wordts)
+        if pre_existing_img is not None:
+            return pre_existing_img
+
         if wordts["word"] == "###":
             color_clip = ColorClip((1920, 1080), (0, 0, 0))
             if wordts["start"] == 0:
@@ -118,6 +123,7 @@ class ClipMakerFactory:
             return color_clip
 
         num = 1
+        image_sizes = ["xlarge", "large", "medium", "small"]
         image_clip = self._get_image_clip(wordts, num)
         while image_clip is None:
             if num == 100:
@@ -126,7 +132,7 @@ class ClipMakerFactory:
                 )
                 break
             num += 1
-            img_size = "large"
+            img_size = image_sizes[num-1] if num-1 <= len(image_sizes)-1 else "medium"
             image_clip = self._get_image_clip(wordts, num, img_size)
         return image_clip.set_duration(
             wordts["end"].total_seconds() - wordts["start"].total_seconds()
@@ -134,15 +140,19 @@ class ClipMakerFactory:
 
     def _get_image_clip(self, wordts: dict, num: int, img_size: str = "xlarge"):
         try:
-            for file in os.listdir(self.local_dest):
-                if file == wordts["word"] + ".jpg":
-                    return ImageClip(self.local_dest + wordts["word"] + ".jpg")
             url = self._get_image_url_from_google_image_search(wordts["word"], num=num, img_size=img_size)
             response = requests.get(url)
-            open(self.local_dest + wordts["word"] + ".jpg", "wb").write(
+            open(f"{self.local_dest}/{wordts['word']}.jpg", "wb").write(
                 response.content
             )
-            image_clip = ImageClip(self.local_dest + wordts["word"] + ".jpg")
+            image_clip = ImageClip(f"{self.local_dest}/{wordts['word']}.jpg")
             return image_clip
         except:
             return None
+    
+    def _check_if_image_exists(self, wordts: dict):
+        if f"{wordts['word']}.jpg" in os.listdir(self.local_dest):
+            return ImageClip(f"{self.local_dest}/{wordts['word']}.jpg").set_duration(
+                wordts["end"].total_seconds() - wordts["start"].total_seconds()
+            )
+        return None

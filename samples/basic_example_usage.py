@@ -10,22 +10,22 @@ from owoi_audio_to_clip.utils import (
     download_audio_from_youtube,
 )
 
-download_audio_from_youtube("https://www.youtube.com/watch?v=d-JBBNg8YKs", "../tmp/", "username", "sicko_mode", 25, 50, "owoi_bucket")
+download_audio_from_youtube("https://youtu.be/mprkqDNUQb0", "../tmp", "username", "maad_city", 0, 20, "owoi_bucket")
 
-# upload_audio_to_gcs("owoi_bucket", "username", "sicko_mode", "../tmp/")
+# upload_audio_to_gcs("owoi_bucket", "username", "maad_city", "../tmp/")
 # print("Audio upload done!")
 
-transcript_factory_test = TranscriptFactory("gs://owoi_bucket/username/audios/sicko_mode.wav")
+transcript_factory_test = TranscriptFactory("gs://owoi_bucket/username/audios/maad_city.wav")
 
 transcript = transcript_factory_test.transcribe_audio_to_text()
 
 print(transcript)
 
-clip_maker_factory = ClipMakerFactory("sicko_mode", "username", transcript, "owoi_bucket", "../tmp/", "sicko_mode")
+clip_maker_factory = ClipMakerFactory("maad_city", "username", transcript, "owoi_bucket", "../tmp", "maad_city", with_subtitles=True)
 
-lip = clip_maker_factory.clip_maker()
+clip = clip_maker_factory.clip_maker()
 
-# upload_video_to_gcs("owoi_bucket", "username", "sicko_mode", "../tmp/")
+# upload_video_to_gcs("owoi_bucket", "username", "maad_city", "../tmp/")
 # print("Video upload done!")
 
 # purge_local_storage_images("../tmp/")
