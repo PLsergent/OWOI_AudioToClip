@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "owoi-audiotoclip"
-version = "1.0.1"
+version = "1.1.0"
 description = "Package to convert audio to video with google speech to text and google image search"
 authors = ["Pierre-Louis Sergent <papa.louis59@gmail.com>"]
 license = "MIT"
