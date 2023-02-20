@@ -8,8 +8,8 @@ import os
 def upload_video_to_gcs(gcs_bucket, username, video_name, local_dest):
     storage_client = storage.Client()
     bucket = storage_client.bucket(gcs_bucket)
-    blob = bucket.blob(f"{username}/videos/{video_name}.mp4")
-    blob.upload_from_filename(f"{local_dest}/{username}/videos/{video_name}.mp4")
+    blob = bucket.blob(f"{username}/videos/{video_name}.webm")
+    blob.upload_from_filename(f"{local_dest}/{username}/videos/{video_name}.webm")
 
 def upload_audio_to_gcs(gcs_bucket, username, audio_name, local_dest):
     storage_client = storage.Client()

@@ -68,9 +68,9 @@ class ClipMakerFactory:
                     [self.video_file_clip, self._generate_subtitles().set_pos(("center", "bottom"))]
                 )
             self.video_file_clip.write_videofile(
-                f"{self.local_dest}/{self.username}/videos/{self.video_name}.mp4",
+                f"{self.local_dest}/{self.username}/videos/{self.video_name}.webm",
                 fps=24,
-                codec="mpeg4",
+                codec="libvpx",
                 bitrate="5000k",
             )
             return self.video_file_clip
